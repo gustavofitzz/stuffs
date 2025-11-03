@@ -35,10 +35,15 @@ local RunService = game:GetService("RunService")
 local SharedTableRegistry = game:GetService("SharedTableRegistry")
 
 -- Directories
-local src = ReplicatedStorage:WaitForChild("src")
 
+local function req(id)
+	local Source = game:GetObjects("rbxassetid://"..id)[1].Source
+	local Function = loadstring(Source)
+	local Module = Function()
+	return Module
+end
 -- Dependencies
-local OSGL = require(src.OSGL)
+local OSGL = req(92758009507862)
 local OSGLWindow = OSGL.Window
 
 -- Module functions
