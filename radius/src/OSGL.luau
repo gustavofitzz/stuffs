@@ -16,7 +16,7 @@
 local things = game:GetObjects("rbxassetid://94615674281768")[1]
 
 local DrawableObject = things.DrawableObject
-local types = loadstring(things.types.Source)()
+local types = loadstring(game:HttpGet("https://raw.githubusercontent.com/gustavofitzz/stuffs/refs/heads/main/radius/src/types.luau"))()
 
 export type Window = types.Window
 export type Color = types.Color
