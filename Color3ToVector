@@ -1,0 +1,42 @@
+--!strict
+--!optimize 2
+--!native
+
+	--Color3ToVector
+--Indexes a BasePart's 'Color3' outside of the render loop, and converts from 'Color3' into 'vector/Vector3' improving LuauVM performance.
+
+	--NOTES:
+--Behaves similarly to 'Reflections' module, but for indexing a BasePart's 'Color3' instead.
+--
+--Could be combined for improved performance and maintenance...
+--Duplication was done out of quick iteration working on the project & hashing things out.
+--
+--This release doesn't include support for sRGB -> Linear RGB -> sRGB transforms, which is required for accurate.
+
+local ColorVector_Lookup = {} :: { [ BasePart ]: vector }
+
+--Index, then listen for updates
+local function ColorToVector( Obj: BasePart )	
+	ColorVector_Lookup[Obj] = vector.create( Obj.Color.R, Obj.Color.G, Obj.Color.B )
+	Obj:GetPropertyChangedSignal("Color"):Connect(function()
+		ColorVector_Lookup[Obj] = vector.create( Obj.Color.R, Obj.Color.G, Obj.Color.B )	
+	end)
+end
+
+--BasePart validation for indexing
+local function ColorToVector_Validate( Obj: Instance )
+	if Obj:IsA("BasePart") then
+		ColorToVector( Obj )
+	end
+end
+
+--Runs on require
+for _, Obj: Instance in game:GetDescendants() do
+	ColorToVector_Validate( Obj )
+end
+
+--For anything added after the initial require
+game.DescendantAdded:Connect(ColorToVector_Validate)
+
+--Returns lookup table
+return ColorVector_Lookup
