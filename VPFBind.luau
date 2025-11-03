@@ -2,7 +2,7 @@
 --!native
 
 --[[
-VPFBind v1.0.1 by @GulgPlayer (Fixed by Claude)
+VPFBind v1.0.0 by @GulgPlayer
 
 VPFBind allows you to display parts and models from Workspace in ViewportFrames with the maximum performance
 
