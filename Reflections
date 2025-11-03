@@ -1,0 +1,37 @@
+--!strict
+--!optimize 2
+--!native
+
+	--Reflections
+--Indexes a BasePart's 'Reflection' outside of the render loop, improving LuauVM performance.
+
+	--NOTES:
+--Behaves similarly to 'Color3ToVector' module, but for indexing a BasePart's 'Reflectance' instead.
+--
+--Could be combined for improved performance and maintenance...
+--Duplication was done out of quick iteration working on the project & hashing things out.
+
+--Performs automatic indexing for reflection. - Relying wholly on the DataModel in realtime is poor for performance.
+local Reflection_Lookup = {} :: { [ BasePart ]: number }
+
+--Index, then listen for updates
+local function Reflection( Obj: BasePart )	
+	Reflection_Lookup[Obj] = Obj.Reflectance
+	Obj:GetPropertyChangedSignal("Reflectance"):Connect(function()
+		Reflection_Lookup[Obj] = Obj.Reflectance
+	end)
+end
+
+--BasePart validation for indexing
+local function Reflection_Validate( Obj: Instance )
+	if Obj:IsA("BasePart") then Reflection( Obj ) end
+end
+
+--Runs on require
+for _, Obj: Instance in game:GetDescendants() do Reflection_Validate( Obj ) end
+
+--For anything added after the initial require
+game.DescendantAdded:Connect(Reflection_Validate)
+
+--Returns lookup table
+return Reflection_Lookup
