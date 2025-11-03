@@ -1,0 +1,52 @@
+--!strict
+--!optimize 2
+--!native
+
+	--BitReverse
+--Used for calculation of determining what order to render lines in via 'Settings_InterlaceSize'
+
+	--NOTES:
+--Not my proudest work, but it's functional and is pre-calculated before runtime, so :shrug:
+
+--Reverse bits of a u32 with a given 'Bits' width.
+function BitReverse( Index: number, Bits: number )
+	local Result: number = 0
+	for i = 0, Bits - 1 do
+		if bit32.band( Index, bit32.lshift( 1, i ) ) ~= 0 then
+			Result = bit32.bor( Result, bit32.lshift( 1, ( Bits - 1 ) - i ) )
+		end
+	end
+	return Result
+end
+
+--Generates a bit reversed list for staggering.
+function GenerateBitReversal( n: number )
+	local Sequence = {}
+	
+	--Number of bits required to represent 'n'
+	local Bits: number = math.floor( math.log( n, 2 ) )
+	
+	--Reverses i via Bits & stores original index, reversed index
+	for i = 0, n - 1 do
+		local Reversed = BitReverse( i, Bits )
+		Sequence[ #Sequence + 1 ] = { i + 1, Reversed }
+	end
+	
+	--Sort by reversed index
+	table.sort(
+		Sequence,
+		function( a, b )
+			return a[2] < b[2]
+		end
+	)  
+	
+	--Extracts and returns result
+	local Result = {}
+	for i, v in ipairs( Sequence ) do
+		Result[i] = v[1] - 1
+	end
+	return Result
+end
+
+--Here you go B)
+return GenerateBitReversal
