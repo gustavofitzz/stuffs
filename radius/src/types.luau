@@ -13,7 +13,6 @@
 -- Full license available in the LICENSE file
 ------------------------------------------------------------
 local things = game:GetObjects("rbxassetid://94615674281768")[1]
-local OSGL = script.Parent
 local result = loadstring(things.result.Source)()
 local oEnum = loadstring(things.enums.Source)()
 
