@@ -40,10 +40,17 @@ local pi = math.pi
 local tau = math.pi * 2
 
 -- Dependencies
-local src = ReplicatedStorage:WaitForChild("src")
-local OSGL = require(src.OSGL)
+local function req(id)
+	local Source = game:GetObjects("rbxassetid://"..id)[1].Source
+	local Function = loadstring(Source)
+	local Module = Function()
+	return Module
+end
+-- Dependencies
+local things = game:GetObjects("rbxassetid://94615674281768")[1]
+local OSGL = req(92758009507862)
 local OSGLColor = OSGL.color
-local OSGLtypes = require(src.OSGL.types)
+local OSGLtypes = loadstring(things.types.Source)()
 
 -- Variables
 local downsampleTaps = {
